@@ -14,6 +14,8 @@
   <meta property="og:image" content="https://vdesigner.vercel.app/profilepicpng.png"> <!-- Substitua pela URL real quando publicar -->
   <meta property="og:image" content="https://vdesigner.vercel.app/profilepicpngwhite.png"> <!-- Substitua pela URL real quando publicar -->
   <meta property="og:type" content="https://vdesigner.vercel.app">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light dark">
   <!-- Added font weight 500 for Inter Medium -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/feather-icons"></script>
@@ -24,12 +26,14 @@
       --muted: #525252;    /* texto secundário */
       --accent: #0a0a0a;    /* cor de destaque */
       --box-w: min(560px, 45vw);
+      color-scheme: light;
     }
     body.dark-mode {
       --bg: #141414; /* Um pouco mais claro que o preto total */
       --fg: #ffffff;
       --muted: #a3a3a3;
       --accent: #ffffff;
+      color-scheme: dark;
     }
     *{box-sizing:border-box; scroll-behavior: smooth;}
     html,body{height:100%}
@@ -186,6 +190,7 @@
       transform: translate(2%, -4%);
       transition: opacity 0.3s ease;
     }
+    .bg-logo img[alt] { color: transparent; } /* Esconde o texto alt se a imagem quebrar */
     body.dark-mode .bg-logo img {
         opacity: 0.015;
     }
@@ -1016,14 +1021,14 @@
   <main id="hero-section" class="content-hidden">
       <div class="wrap">
         <div class="bg-logo" aria-hidden="true">
-          <img src="profilepicpng.png" alt="Background Logo" onerror="this.onerror=null;this.src='https://placehold.co/1600x1200/e0e0e0/333333?text=Image+Not+Found';" />
+          <img src="./profilepicpng.png" alt="Background Logo" onerror="this.onerror=null;this.src='https://placehold.co/1600x1200/e0e0e0/333333?text=Image+Not+Found';" />
         </div>
 
         <div class="grid">
           <section class="box" style="justify-content:center">
             <div class="brand">
               <div id="draggable-logo" class="logo-wrapper">
-                  <img class="brand-logo" src="profilepicpng.png" draggable="false" alt="Logo" onerror="this.onerror=null;this.src='https://placehold.co/300x88/e0e0e0/333333?text=Image+Not+Found';" />
+                  <img class="brand-logo" src="./profilepicpng.png" draggable="false" alt="Logo" onerror="this.onerror=null;this.src='https://placehold.co/300x88/e0e0e0/333333?text=Image+Not+Found';" />
                   <div class="handle tl"></div>
                   <div class="handle tr"></div>
                   <div class="handle bl"></div>
@@ -1685,9 +1690,12 @@
         const brandLogo = document.querySelector('.brand-logo');
         const bgLogo = document.querySelector('.bg-logo img');
         const themeTransitionOverlay = document.getElementById('theme-transition-overlay');
+        let isTransitioning = false;
 
         function toggleTheme(e) {
             if(e) e.preventDefault();
+            if(isTransitioning) return;
+            isTransitioning = true;
             
             // 1. Show Overlay
             themeTransitionOverlay.classList.add('active');
@@ -1699,14 +1707,19 @@
                     // 4. Actual Toggle
                     document.body.classList.toggle('dark-mode');
                     const isDark = document.body.classList.contains('dark-mode');
+                    
+                    // Atualiza a cor da barra do navegador no mobile
+                    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+                    if(metaThemeColor) metaThemeColor.setAttribute('content', isDark ? '#141414' : '#ffffff');
 
                     // Swap Logos
-                    const newSrc = isDark ? 'profilepicpngwhite.png' : 'profilepicpng.png';
+                    const newSrc = isDark ? './profilepicpngwhite.png' : './profilepicpng.png';
                     if(brandLogo) brandLogo.src = newSrc;
                     if(bgLogo) bgLogo.src = newSrc;
 
                     // 5. Hide Overlay
                     themeTransitionOverlay.classList.remove('active');
+                    isTransitioning = false;
 
                 }, 1000);
             }, 500);
