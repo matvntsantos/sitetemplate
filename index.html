@@ -814,11 +814,24 @@
             }, 500);
         }
 
+let transitionStarted = false;
+
         function onAnimationEnd(event) {
-            if (event.animationName === 'reveal-text') {
+            if (event.animationName === 'reveal-text' && !transitionStarted) {
+                transitionStarted = true;
                 startTransition();
             }
         }
+
+        typewriter.addEventListener('animationend', onAnimationEnd);
+        
+        // Fallback: força a transição após 5 segundos caso o evento não dispare
+        setTimeout(() => {
+            if (!transitionStarted) {
+                transitionStarted = true;
+                startTransition();
+            }
+        }, 5000);
 
         typewriter.addEventListener('animationend', onAnimationEnd);
 
@@ -891,6 +904,7 @@
 
 </body>
 </html>
+
 
 
 
