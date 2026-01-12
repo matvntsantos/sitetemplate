@@ -184,6 +184,34 @@
     .brand{
       display:flex; flex-direction:column; gap: 24px; align-items:flex-start;
     }
+    /* --- Draggable Logo Styles --- */
+    .logo-wrapper {
+        position: relative;
+        display: inline-block;
+        cursor: none; /* Mantém o cursor personalizado */
+        user-select: none;
+        touch-action: none; /* Prevent scrolling on mobile while dragging */
+    }
+    .logo-wrapper.active {
+        outline: 2px dashed var(--accent);
+        cursor: none;
+    }
+    .logo-wrapper .handle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        border: 2px solid var(--accent);
+        border-radius: 50%;
+        display: none;
+        z-index: 10;
+    }
+    .logo-wrapper.active .handle { display: block; }
+    .logo-wrapper .handle.tl { top: -6px; left: -6px; }
+    .logo-wrapper .handle.tr { top: -6px; right: -6px; }
+    .logo-wrapper .handle.bl { bottom: -6px; left: -6px; }
+    .logo-wrapper .handle.br { bottom: -6px; right: -6px; }
+
     .brand-logo{
       height: 88px;
       width:auto; display:block;
@@ -195,7 +223,16 @@
         line-height:1.1;
         font-size: clamp(1.8rem, 3.5vw, 2.5rem);
     }
-    .taglines span{display:block}
+    .taglines span{
+        display:block;
+        opacity: 0;
+        transform: translateY(15px);
+        filter: blur(10px);
+        transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+    }
+    .grid.visible .taglines span { opacity: 1; transform: translateY(0); filter: blur(0); }
+    .grid.visible .taglines span:nth-child(1) { transition-delay: 0.3s; }
+    .grid.visible .taglines span:nth-child(2) { transition-delay: 0.5s; }
 
     nav{
       display:flex; flex-direction:column; gap: 14px; align-items:flex-end;
@@ -212,9 +249,19 @@
       font-size: 1.1rem;
       padding:12px 0; border-bottom:none;
       text-align: right;
+      opacity: 0;
+      transform: translateX(20px);
       transition: transform .2s cubic-bezier(.2,.8,.2,1), opacity .2s;
     }
-    .menu a:hover{transform: translateX(-6px)}
+    .grid.visible .menu a {
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.2,.8,.2,1);
+    }
+    .grid.visible .menu a:nth-child(1) { transition-delay: 0.4s; }
+    .grid.visible .menu a:nth-child(2) { transition-delay: 0.5s; }
+    .grid.visible .menu a:nth-child(3) { transition-delay: 0.6s; }
+    .menu a:hover{transform: translateX(-6px); transition-delay: 0s;}
 
     .scroll-down {
         position: absolute;
@@ -274,6 +321,10 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
+    }
+    #servicos .card:hover {
+        transform: translateY(-12px);
     }
     #servicos .thumb {
         width: 100%;
@@ -303,6 +354,11 @@
         font-size: 14px;
         line-height: 1.25;
         width: 100%;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+    #servicos .card:hover .caption {
+        transform: translateX(8px);
+        color: var(--accent);
     }
     /* Pushes the right column (even items) down */
     #servicos .card:nth-child(even) { 
@@ -393,6 +449,10 @@
         left: 40px;
         bottom: 40px;
         z-index: 2; /* Ensure title is above the image */
+        transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
+    }
+    #destaques .grid-item:hover .item-title-block {
+        transform: translateX(15px) translateY(-5px);
     }
     #destaques .item-title-block h2 {
         font-family: 'Inter', sans-serif;
@@ -401,6 +461,10 @@
         line-height: 1.1;
         margin: 0;
         text-transform: uppercase;
+        transition: letter-spacing 0.4s ease;
+    }
+    #destaques .grid-item:hover .item-title-block h2 {
+        letter-spacing: 3px;
     }
     #destaques .item-title-block p {
         font-family: 'Inter', sans-serif;
@@ -492,6 +556,59 @@
         font-weight: 700;
     }
 
+
+    /* --- Extra Animations --- */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .brand-logo.floating {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .menu a {
+        position: relative;
+    }
+    .menu a::after {
+        content: '';
+        position: absolute;
+        bottom: 12px;
+        right: 0;
+        width: 0;
+        height: 1px;
+        background-color: var(--fg);
+        transition: width 0.3s ease;
+    }
+    .menu a:hover::after {
+        width: 100%;
+    }
+
+    #sobre-contato .social-icons a {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+    }
+    #sobre-contato .contact.is-visible .social-icons a {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    #sobre-contato .contact.is-visible .social-icons a:nth-child(1) { transition-delay: 0.1s; }
+    #sobre-contato .contact.is-visible .social-icons a:nth-child(2) { transition-delay: 0.2s; }
+    #sobre-contato .social-icons a:hover {
+        transform: scale(1.2);
+        transition-delay: 0s;
+    }
+
+    .back-to-top a {
+        display: inline-block;
+        transition: transform 0.3s ease;
+        animation: float 3s ease-in-out infinite;
+    }
+    .back-to-top a:hover {
+        transform: translateY(-5px);
+    }
 
     /* --- Scroll Reveal Styles --- */
     .revealable {
@@ -589,7 +706,13 @@
         <div class="grid">
           <section class="box" style="justify-content:center">
             <div class="brand">
-              <img class="brand-logo" src="/profilepicpng.png" alt="Logo" onerror="this.onerror=null;this.src='https://placehold.co/300x88/e0e0e0/333333?text=Image+Not+Found';" />
+              <div id="draggable-logo" class="logo-wrapper">
+                  <img class="brand-logo" src="/profilepicpng.png" draggable="false" alt="Logo" onerror="this.onerror=null;this.src='https://placehold.co/300x88/e0e0e0/333333?text=Image+Not+Found';" />
+                  <div class="handle tl"></div>
+                  <div class="handle tr"></div>
+                  <div class="handle bl"></div>
+                  <div class="handle br"></div>
+              </div>
               <div class="taglines" aria-label="serviços destacados">
                 <span>BANNERS. FLYERS.</span>
                 <span>POSTS. E MAIS.</span>
@@ -899,14 +1022,340 @@ let transitionStarted = false;
             });
         });
 
+        // --- Parallax Effect for Background Logo ---
+        const bgLogoImg = document.querySelector('.bg-logo img');
+        let lastScrollY = window.scrollY;
+
+        function updateParallax() {
+            const scrollY = window.scrollY;
+            const parallaxSpeed = 0.5; // Adjust for desired effect
+            const translateY = scrollY * parallaxSpeed;
+            bgLogoImg.style.transform = `translate(2%, calc(-4% + ${translateY}px))`;
+            lastScrollY = scrollY;
+            requestAnimationFrame(updateParallax);
+        }
+
+        updateParallax();
+
+        // --- Floating Logo Trigger ---
+        setTimeout(() => {
+            const brandLogo = document.querySelector('.brand-logo');
+            if(brandLogo) brandLogo.classList.add('floating');
+        }, 2500);
+
+        // --- Scroll Down Fade Out ---
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                scrollDownIcon.style.opacity = '0';
+                scrollDownIcon.style.pointerEvents = 'none';
+            } else {
+                // Only show if the intro animation has finished
+                if (grid.classList.contains('visible')) {
+                    scrollDownIcon.style.opacity = '1';
+                    scrollDownIcon.style.pointerEvents = 'auto';
+                }
+            }
+        });
+
+        // --- Draggable Logo Logic ---
+        const logoWrapper = document.getElementById('draggable-logo');
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        let isFixed = false;
+        let resetTimer = null;
+        let placeholder = null;
+        let originalParent = null;
+        let nextSibling = null;
+
+        function startDrag(e) {
+            e.preventDefault(); // Prevent default browser drag behavior (ghost image)
+
+            // Cancela o reset se o usuário pegar a logo novamente
+            if (resetTimer) {
+                clearTimeout(resetTimer);
+                resetTimer = null;
+            }
+            logoWrapper.style.transition = 'none'; // Remove transição para arrasto instantâneo
+
+            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+
+            // "Pop" the logo out of the layout on first interaction
+            if (!isFixed) {
+                const rect = logoWrapper.getBoundingClientRect();
+                
+                // Save original context
+                originalParent = logoWrapper.parentNode;
+                nextSibling = logoWrapper.nextSibling;
+
+                // Create a placeholder to prevent layout shift
+                placeholder = document.createElement('div');
+                placeholder.style.width = rect.width + 'px';
+                placeholder.style.height = rect.height + 'px';
+                placeholder.style.display = 'inline-block'; // Match wrapper display
+                originalParent.insertBefore(placeholder, logoWrapper);
+
+                // Move to body to escape transform contexts (fixes teleport issue)
+                document.body.appendChild(logoWrapper);
+
+                // Set fixed position to allow free movement
+                logoWrapper.style.position = 'fixed';
+                logoWrapper.style.left = rect.left + 'px';
+                logoWrapper.style.top = rect.top + 'px';
+                logoWrapper.style.width = rect.width + 'px';
+                logoWrapper.style.height = rect.height + 'px';
+                logoWrapper.style.zIndex = '10001';
+                logoWrapper.style.margin = '0';
+                
+                isFixed = true;
+            }
+
+            logoWrapper.classList.add('active');
+            // Add a "pop" effect via transform
+            logoWrapper.style.transform = 'scale(1.05)';
+
+            isDragging = true;
+            startX = clientX;
+            startY = clientY;
+            
+            // Read current left/top (which we just set)
+            initialLeft = parseFloat(logoWrapper.style.left);
+            initialTop = parseFloat(logoWrapper.style.top);
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag, {passive: false});
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchend', stopDrag);
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault(); // Prevent scrolling
+            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+            logoWrapper.style.left = (initialLeft + dx) + 'px';
+            logoWrapper.style.top = (initialTop + dy) + 'px';
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            logoWrapper.classList.remove('active'); // Remove o contorno ao soltar
+            logoWrapper.style.transform = ''; // Remove pop scale
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('touchmove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchend', stopDrag);
+
+            // Inicia contagem para voltar ao lugar
+            resetTimer = setTimeout(returnToOrigin, 3000);
+        }
+
+        function returnToOrigin() {
+            if (!isFixed || !placeholder) return;
+
+            const rect = placeholder.getBoundingClientRect();
+            
+            // Animação suave de volta
+            logoWrapper.style.transition = 'left 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            logoWrapper.style.left = rect.left + 'px';
+            logoWrapper.style.top = rect.top + 'px';
+
+            logoWrapper.addEventListener('transitionend', function cleanup() {
+                if (!isDragging && isFixed) { // Garante que o usuário não pegou de novo durante a animação
+                    // Move back to original DOM position
+                    if (originalParent && placeholder.parentNode === originalParent) {
+                        originalParent.insertBefore(logoWrapper, placeholder);
+                    } else {
+                        placeholder.parentNode.insertBefore(logoWrapper, placeholder);
+                    }
+
+                    logoWrapper.style.position = '';
+                    logoWrapper.style.left = '';
+                    logoWrapper.style.top = '';
+                    logoWrapper.style.width = '';
+                    logoWrapper.style.height = '';
+                    logoWrapper.style.zIndex = '';
+                    logoWrapper.style.margin = '';
+                    logoWrapper.style.transition = '';
+                    logoWrapper.style.transform = '';
+                    
+                    placeholder.remove();
+                    placeholder = null;
+                    isFixed = false;
+                }
+            }, { once: true });
+        }
+
+        logoWrapper.addEventListener('mousedown', startDrag);
+        logoWrapper.addEventListener('touchstart', startDrag, {passive: false});
+
+        // Remove active state when clicking outside
+        document.addEventListener('mousedown', (e) => {
+            if (isFixed && !logoWrapper.contains(e.target)) {
+                logoWrapper.classList.remove('active');
+            }
+        });
+        document.addEventListener('touchstart', (e) => {
+            if (isFixed && !logoWrapper.contains(e.target)) {
+                logoWrapper.classList.remove('active');
+            }
+        });
+
+        // --- Extra: Magnetic Buttons Effect ---
+        const magneticBtns = document.querySelectorAll('.menu a, .social-icons a, .back-to-top a');
+        magneticBtns.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                // Move o botão levemente em direção ao mouse
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                btn.style.transition = 'transform 0.1s ease-out';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0, 0)';
+                btn.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            });
+        });
+
+        // --- Extra: 3D Tilt Effect on Services ---
+        const cards = document.querySelectorAll('#servicos .card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                // Inclina o card baseado na posição do mouse
+                card.style.transform = `perspective(1000px) rotateX(${-y * 0.02}deg) rotateY(${x * 0.02}deg) translateY(-12px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = ''; // Volta ao estado normal (definido no CSS hover)
+            });
+        });
+
     });
   </script>
 
 </body>
 </html>
+            const scrollY = window.scrollY;
+            const parallaxSpeed = 0.5; // Adjust for desired effect
+            const translateY = scrollY * parallaxSpeed;
+            bgLogoImg.style.transform = `translate(2%, calc(-4% + ${translateY}px))`;
+            lastScrollY = scrollY;
+            requestAnimationFrame(updateParallax);
+        }
 
+        updateParallax();
 
+        // --- Floating Logo Trigger ---
+        setTimeout(() => {
+            const brandLogo = document.querySelector('.brand-logo');
+            if(brandLogo) brandLogo.classList.add('floating');
+        }, 2500);
 
+        // --- Scroll Down Fade Out ---
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                scrollDownIcon.style.opacity = '0';
+                scrollDownIcon.style.pointerEvents = 'none';
+            } else {
+                // Only show if the intro animation has finished
+                if (grid.classList.contains('visible')) {
+                    scrollDownIcon.style.opacity = '1';
+                    scrollDownIcon.style.pointerEvents = 'auto';
+                }
+            }
+        });
 
+        // --- Draggable Logo Logic ---
+        const logoWrapper = document.getElementById('draggable-logo');
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        let isFixed = false;
 
+        function startDrag(e) {
+            // Allow multi-touch gestures or other interactions if needed, but here we consume the event
+            if (e.type === 'touchstart') e.preventDefault();
 
+            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+
+            // "Pop" the logo out of the layout on first interaction
+            if (!isFixed) {
+                const rect = logoWrapper.getBoundingClientRect();
+                
+                // Create a placeholder to prevent layout shift
+                const placeholder = document.createElement('div');
+                placeholder.style.width = rect.width + 'px';
+                placeholder.style.height = rect.height + 'px';
+                placeholder.style.display = 'inline-block'; // Match wrapper display
+                logoWrapper.parentNode.insertBefore(placeholder, logoWrapper);
+
+                // Set fixed position to allow free movement
+                logoWrapper.style.position = 'fixed';
+                logoWrapper.style.left = rect.left + 'px';
+                logoWrapper.style.top = rect.top + 'px';
+                logoWrapper.style.width = rect.width + 'px';
+                logoWrapper.style.zIndex = '10001';
+                logoWrapper.style.margin = '0';
+                
+                isFixed = true;
+            }
+
+            logoWrapper.classList.add('active');
+            isDragging = true;
+            startX = clientX;
+            startY = clientY;
+            
+            const style = window.getComputedStyle(logoWrapper);
+            initialLeft = parseFloat(style.left);
+            initialTop = parseFloat(style.top);
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag, {passive: false});
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchend', stopDrag);
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault(); // Prevent scrolling
+            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+            logoWrapper.style.left = (initialLeft + dx) + 'px';
+            logoWrapper.style.top = (initialTop + dy) + 'px';
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('touchmove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchend', stopDrag);
+        }
+
+        logoWrapper.addEventListener('mousedown', startDrag);
+        logoWrapper.addEventListener('touchstart', startDrag, {passive: false});
+
+        // Remove active state when clicking outside
+        document.addEventListener('mousedown', (e) => {
+            if (isFixed && !logoWrapper.contains(e.target)) {
+                logoWrapper.classList.remove('active');
+            }
+        });
+        document.addEventListener('touchstart', (e) => {
+            if (isFixed && !logoWrapper.contains(e.target)) {
+                logoWrapper.classList.remove('active');
+            }
+        });
+
+    });
+  </script>
+
+</body>
+</html>
