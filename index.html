@@ -516,6 +516,12 @@
         z-index: 2; /* Ensure title is above the image */
         transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
     }
+    /* Mobile Color Reveal */
+    @media (max-width: 860px) {
+        #destaques .grid-item.color-reveal .portfolio-image {
+            filter: grayscale(0%) contrast(100%);
+        }
+    }
     #destaques .grid-item:hover .portfolio-image {
         filter: grayscale(0%) contrast(100%);
     }
@@ -1005,6 +1011,7 @@
       <div class="wrap">
         <div class="bg-logo" aria-hidden="true">
           <img src="/profilepicpng.png" alt="Background Logo" onerror="this.onerror=null;this.src='https://placehold.co/1600x1200/e0e0e0/333333?text=Image+Not+Found';" />
+          <img src="profilepicpng.png" alt="Background Logo" onerror="this.onerror=null;this.src='https://placehold.co/1600x1200/e0e0e0/333333?text=Image+Not+Found';" />
         </div>
 
         <div class="grid">
@@ -1012,6 +1019,7 @@
             <div class="brand">
               <div id="draggable-logo" class="logo-wrapper">
                   <img class="brand-logo" src="/profilepicpng.png" draggable="false" alt="Logo" onerror="this.onerror=null;this.src='https://placehold.co/300x88/e0e0e0/333333?text=Image+Not+Found';" />
+                  <img class="brand-logo" src="profilepicpng.png" draggable="false" alt="Logo" onerror="this.onerror=null;this.src='https://placehold.co/300x88/e0e0e0/333333?text=Image+Not+Found';" />
                   <div class="handle tl"></div>
                   <div class="handle tr"></div>
                   <div class="handle bl"></div>
@@ -1394,6 +1402,26 @@
         const elementsToReveal = document.querySelectorAll('.revealable');
         elementsToReveal.forEach(el => {
             observer.observe(el);
+        });
+
+        // --- Mobile Project Color Reveal (30% visibility) ---
+        const projectObserverOptions = {
+            threshold: 0.3
+        };
+        
+        const projectObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('color-reveal');
+                } else {
+                    entry.target.classList.remove('color-reveal');
+                }
+            });
+        }, projectObserverOptions);
+
+        const projectItems = document.querySelectorAll('.grid-item');
+        projectItems.forEach(item => {
+            projectObserver.observe(item);
         });
 
         // --- Custom Cursor Logic ---
