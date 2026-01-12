@@ -6,6 +6,11 @@
   <title>VDESI — Portfólio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- SEO & Open Graph -->
+  <meta property="og:title" content="VDESI — Portfólio de Design">
+  <meta property="og:description" content="Design Gráfico, UI e Branding. Transformando ideias em realidade visual.">
+  <meta property="og:image" content="https://seusite.com/profilepicpng.png"> <!-- Substitua pela URL real quando publicar -->
+  <meta property="og:type" content="website">
   <!-- Added font weight 500 for Inter Medium -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/feather-icons"></script>
@@ -16,6 +21,12 @@
       --muted: #525252;    /* texto secundário */
       --accent: #0a0a0a;    /* cor de destaque */
       --box-w: min(560px, 45vw);
+    }
+    body.dark-mode {
+      --bg: #141414; /* Um pouco mais claro que o preto total */
+      --fg: #ffffff;
+      --muted: #a3a3a3;
+      --accent: #ffffff;
     }
     *{box-sizing:border-box; scroll-behavior: smooth;}
     html,body{height:100%}
@@ -31,11 +42,16 @@
     }
     body{
       margin:0; font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background-color: #F8F8F8; /* Cor de fundo principal */
+      background-color: var(--bg); /* Cor de fundo principal */
       color: var(--fg);
       /* Changed to allow scrolling once preloader is gone */
       overflow:hidden;
       cursor: none; /* Hide the default cursor */
+    }
+
+    ::selection {
+        background: var(--fg);
+        color: var(--bg);
     }
 
     /* --- Custom Cursor Styles --- */
@@ -43,18 +59,26 @@
         position: fixed;
         width: 20px;
         height: 20px;
-        background-color: #0a0a0a;
+        background-color: #ffffff; /* Branco para funcionar o difference */
         border-radius: 50%;
         pointer-events: none;
+        mix-blend-mode: difference; /* Inverte as cores do fundo */
         /* Transform is now fully handled by JS for the lag effect */
         transition: background-color 0.3s ease-out, transform 0.3s ease-out;
-        z-index: 10000;
+        z-index: 20000; /* Z-index aumentado para ficar acima de tudo */
+        opacity: 1; /* Opacidade total para o efeito de inversão ficar nítido */
         left: 0;
         top: 0;
     }
     #custom-cursor.hover {
         transform: scale(1.5);
-        background-color: #0000ff; /* Blue color on hover */
+        /* background-color: var(--accent); Removido para manter a inversão */
+    }
+    /* Remove cursor personalizado no mobile */
+    @media (hover: none) and (pointer: coarse) {
+        #custom-cursor { display: none; }
+        body { cursor: auto; }
+        a, .grid-item-link { cursor: pointer; }
     }
     a, .grid-item-link {
         cursor: none;
@@ -82,34 +106,43 @@
         text-align: center;
     }
 
-    .animated-text {
-        font-size: 5vw;
+    .loader-text {
+        font-family: 'Courier New', Courier, monospace; /* Fonte mais técnica/underground */
+        font-size: clamp(1.5rem, 5vw, 3.5rem);
         font-weight: 800;
         color: white;
-    }
-
-    .animated-text span {
+        text-transform: uppercase;
         position: relative;
+        display: inline-block;
     }
     
-    .animated-text span::before {
-        content: "Dê vida às suas ideias";
-        color: white;
-    }
-
-    .animated-text span::after {
-        content: "";
+    /* Glitch Effect Styles */
+    .loader-text.glitch::before,
+    .loader-text.glitch::after {
+        content: attr(data-text);
         position: absolute;
-        width: calc(100% + 8px);
+        top: 0;
+        left: 0;
+        width: 100%;
         height: 100%;
-        background-color: black; /* The mask that reveals the text */
-        right: -8px;
-        animation: reveal-text 3s steps(21) 1s forwards;
+        background: #000;
     }
-
-    @keyframes reveal-text {
-        from { width: calc(100% + 8px); }
-        to { width: 0; }
+    .loader-text.glitch::before {
+        left: 2px;
+        text-shadow: -2px 0 #ff00c1;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+    }
+    .loader-text.glitch::after {
+        left: -2px;
+        text-shadow: -2px 0 #00fff9;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+    }
+    @keyframes glitch-anim {
+        0% { clip: rect(30px, 9999px, 10px, 0); }
+        5% { clip: rect(80px, 9999px, 90px, 0); }
+        100% { clip: rect(10px, 9999px, 60px, 0); }
     }
     /* --- End of Pre-loader Styles --- */
 
@@ -124,7 +157,7 @@
         position: sticky; /* Makes it stick while scrolling */
         top: 0;
         z-index: 1; /* Behind the services section */
-        background-color: var(--bg);
+        background-color: transparent;
     }
 
     .wrap{
@@ -148,6 +181,7 @@
       opacity: .03;
       filter: grayscale(100%);
       transform: translate(2%, -4%);
+      transition: opacity 0.3s ease;
     }
 
     #hero-section .grid{
@@ -161,7 +195,7 @@
     .box{
       width: var(--box-w);
       min-height: 320px;
-      background: transparent;
+      background: transparent; /* Removido fundo para evitar quadrado claro no dark mode */
       border: none;
       border-radius: 16px;
       display:flex; flex-direction:column; gap: 24px;
@@ -201,7 +235,7 @@
         width: 10px;
         height: 10px;
         background-color: #fff;
-        border: 2px solid var(--accent);
+        border: 2px solid #000;
         border-radius: 50%;
         display: none;
         z-index: 10;
@@ -242,6 +276,13 @@
       display:flex; flex-direction:column; gap:12px; width:100%;
       align-items: flex-end;
     }
+    /* Botão de tema discreto no menu */
+    #hero-theme-toggle {
+        color: var(--fg);
+        margin-bottom: 10px;
+        opacity: 0.6;
+    }
+    #hero-theme-toggle:hover { opacity: 1; }
     .menu a{
       display:block; width: auto;
       text-decoration:none; color:var(--fg);
@@ -296,12 +337,33 @@
         font-size: 1.125rem;
     }
 
+    /* --- Marquee Section --- */
+    .marquee-container {
+        width: 100%;
+        overflow: hidden;
+        background: var(--fg);
+        color: var(--bg);
+        padding: 15px 0;
+        white-space: nowrap;
+        position: relative;
+        z-index: 2;
+    }
+    .marquee-content {
+        display: inline-block;
+        /* Animation handled by JS now for interactivity */
+        will-change: transform;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(1rem, 4vw, 1.2rem); /* Responsivo */
+        letter-spacing: 2px;
+    }
+
     /* --- Services Section --- */
     #servicos {
         position: relative; /* Needed for z-index to work */
         z-index: 2; /* Sits on top of the hero section */
         background-color: var(--bg);
-        color: #111;
+        color: var(--fg);
         padding: 40px 24px 80px;
     }
     #servicos .page-content {
@@ -346,7 +408,7 @@
     }
     #servicos .caption {
         position: static; /* Reverted positioning */
-        color: #333;
+        color: var(--fg);
         text-shadow: none;
         margin-top: 10px;
         letter-spacing: 0.18em;
@@ -354,7 +416,7 @@
         font-size: 14px;
         line-height: 1.25;
         width: 100%;
-        transition: transform 0.3s ease, color 0.3s ease;
+        transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
     }
     #servicos .card:hover .caption {
         transform: translateX(8px);
@@ -370,16 +432,17 @@
     #destaques {
         position: relative;
         z-index: 3;
-        background-color: var(--bg); /* Reverted to white */
+        background-color: var(--bg);
     }
     #destaques .header {
         text-align: center;
         padding: 40px 20px;
-        color: #333;
+        color: var(--fg);
     }
     #destaques .header p {
         font-weight: 500; /* Inter Medium */
         font-size: 16px;
+        color: var(--fg);
         margin: 0;
         padding-top: 15px;
         position: relative;
@@ -389,7 +452,7 @@
         display: block;
         width: 6px;
         height: 6px;
-        background-color: #000000;
+        background-color: var(--fg);
         border-radius: 50%;
         position: absolute;
         top: 0;
@@ -402,7 +465,7 @@
         width: 100%;
         gap: 0;
         position: relative;
-        background-color: #d9d9d9; /* Fills sub-pixel gaps */
+        background-color: var(--muted); /* Fills sub-pixel gaps */
     }
     #destaques .grid-item-link {
         display: block;
@@ -410,7 +473,7 @@
     }
     #destaques .grid-item {
         height: 720px; /* Increased height */
-        background-color: #d9d9d9;
+        background-color: #ccc;
         box-sizing: border-box;
         padding: 40px;
         overflow: hidden;
@@ -427,7 +490,7 @@
     }
     /* Checkerboard effect */
     #destaques .grid-item:nth-child(even) {
-        background-color: #cccccc; /* Slightly darker color */
+        background-color: #bbb; /* Slightly darker color */
     }
     /* --- NEW: Portfolio Image Styles --- */
     .portfolio-image {
@@ -438,6 +501,8 @@
         height: 100%;
         object-fit: cover; /* This is key! */
         z-index: 1;
+        filter: grayscale(100%) contrast(110%);
+        transition: filter 0.4s ease;
     }
     #destaques .image-placeholder-text {
         display: none; /* Hide the old text placeholder */
@@ -450,6 +515,9 @@
         bottom: 40px;
         z-index: 2; /* Ensure title is above the image */
         transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
+    }
+    #destaques .grid-item:hover .portfolio-image {
+        filter: grayscale(0%) contrast(100%);
     }
     #destaques .grid-item:hover .item-title-block {
         transform: translateX(15px) translateY(-5px);
@@ -483,7 +551,7 @@
         width: 100%;
         max-width: 1080px;
         margin: 0 auto;
-        background-color: #FFFFFF;
+        background-color: var(--bg);
         background-repeat: no-repeat;
         background-position: center center;
         background-size: contain;
@@ -510,7 +578,7 @@
         margin-bottom: 25px;
     }
     #sobre-contato .contact .social-icons a {
-        color: #2b2b2b;
+        color: var(--fg);
         margin: 0 12px;
         text-decoration: none;
     }
@@ -520,7 +588,7 @@
     }
     #sobre-contato .contact .email {
         font-size: 1.1rem;
-        color: #2b2b2b;
+        color: var(--fg);
         text-decoration: none;
         letter-spacing: 0.05em;
     }
@@ -530,13 +598,13 @@
         position: relative;
         z-index: 5;
         width: 100%;
-        background-color: #444444;
-        color: #E0E0E0;
+        background-color: #111;
+        color: #888;
         padding: 60px 20px 40px;
         text-align: center;
     }
     footer .back-to-top {
-        margin-bottom: 50px;
+        margin-bottom: 30px;
     }
     footer .back-to-top a {
         color: #E0E0E0;
@@ -556,6 +624,229 @@
         font-weight: 700;
     }
 
+    /* --- Dark Mode Toggle --- */
+    .theme-toggle {
+        margin-top: 20px;
+        display: inline-block;
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #333;
+        border-radius: 50px;
+        background: transparent;
+        color: #888;
+        transition: all 0.3s ease;
+    }
+    .theme-toggle:hover {
+        background: #333;
+        color: #fff;
+    }
+
+    /* --- Noise Texture --- */
+    .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 19999; /* Acima do modal, abaixo do cursor */
+        opacity: 0.03; /* Reduzido para ficar mais sutil */
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+    
+    /* --- Theme Transition Overlay --- */
+    #theme-transition-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        z-index: 21000; /* Acima de tudo, inclusive cursor */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+    }
+    #theme-transition-overlay.active { opacity: 1; pointer-events: auto; }
+    .theme-loader { width: 40px; height: 40px; background-color: #fff; animation: spin-square 1s infinite linear; }
+    @keyframes spin-square { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* --- Case Study Modal (Fullscreen Slider) --- */
+    #case-study-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+        backdrop-filter: blur(15px); /* Desfoque do fundo */
+        z-index: 10002;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        flex-direction: column;
+    }
+    #case-study-modal.active {
+        display: flex;
+        opacity: 1;
+    }
+    body.dark-mode #case-study-modal {
+        background: rgba(10, 10, 10, 0.8);
+    }
+    .modal-header {
+        padding: 20px;
+        display: flex;
+        justify-content: flex-end;
+        z-index: 10;
+    }
+    .close-modal {
+        background: none;
+        border: none;
+        color: var(--fg);
+        cursor: pointer;
+        width: 48px;
+        height: 48px;
+        border: 2px solid var(--fg);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    .close-modal:hover {
+        background: var(--fg);
+        color: var(--bg);
+        transform: rotate(90deg);
+    }
+    .modal-slider {
+        flex: 1;
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        height: 100%;
+        align-items: center;
+    }
+    /* Hide scrollbar in modal */
+    .modal-slider::-webkit-scrollbar { display: none; }
+    .modal-slider { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .slide {
+        min-width: 100vw;
+        height: 100%;
+        scroll-snap-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+    }
+    .slide img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        transform: scale(0.9);
+        opacity: 0;
+        transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s ease;
+    }
+    .slide.active img {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    /* Modal Navigation Buttons */
+    .modal-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(5px);
+        border: 2px solid var(--fg);
+        border-radius: 50%;
+        width: 64px;
+        height: 64px;
+        color: var(--fg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: none; /* Mantém cursor personalizado */
+        z-index: 20;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .modal-nav-btn:hover {
+        transform: translateY(-50%) scale(1.1);
+        background: var(--fg);
+        color: var(--bg);
+    }
+    .modal-prev { left: 0; }
+    .modal-next { right: 0; }
+    .modal-prev { left: 20px; }
+    .modal-next { right: 20px; }
+
+    /* Slide Caption (Street/Underground Style) */
+    .slide-caption {
+        position: absolute;
+        bottom: 60px;
+        left: 60px;
+        max-width: 400px;
+        z-index: 10;
+        pointer-events: none;
+        text-align: left;
+    }
+    .slide-caption h3 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        background: var(--fg);
+        color: var(--bg);
+        padding: 5px 15px;
+        display: inline-block;
+        margin: 0 0 10px 0;
+        transform: rotate(-1deg);
+        transform-origin: left bottom;
+        
+        /* Estado Oculto (Saída) */
+        opacity: 0;
+        transform: translateY(50px) rotate(10deg) scale(0.8);
+        transition: opacity 0.3s ease, transform 0.3s ease; /* Saída rápida */
+    }
+    .slide-caption p {
+        font-size: 1rem;
+        font-weight: 600;
+        background: var(--bg);
+        color: var(--fg);
+        padding: 10px 15px;
+        display: inline-block;
+        margin: 0;
+        border: 2px solid var(--fg);
+        transform: rotate(1deg);
+        
+        /* Estado Oculto (Saída) */
+        opacity: 0;
+        transform: translateY(50px) rotate(-10deg) scale(0.8);
+        transition: opacity 0.3s ease, transform 0.3s ease; /* Saída rápida */
+    }
+    .slide.active .slide-caption h3 {
+        opacity: 1;
+        transform: translateY(0) rotate(-1deg) scale(1);
+        transition: opacity 0.6s ease 0.3s, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s; /* Entrada elástica com delay */
+    }
+    .slide.active .slide-caption p {
+        opacity: 1;
+        transform: translateY(0) rotate(1deg) scale(1);
+        transition: opacity 0.6s ease 0.4s, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s; /* Entrada elástica com delay */
+    }
+    
+    @media (max-width: 768px) {
+        .slide-caption { bottom: 80px; left: 20px; right: 20px; }
+        .slide-caption h3 { font-size: 1.5rem; }
+        .modal-nav-btn { width: 48px; height: 48px; }
+        .modal-prev { left: 10px; }
+        .modal-next { right: 10px; }
+    }
 
     /* --- Extra Animations --- */
     @keyframes float {
@@ -633,6 +924,11 @@
     #destaques .grid-item.is-visible:nth-of-type(5) { transition-delay: 0.2s; }
     #destaques .grid-item.is-visible:nth-of-type(6) { transition-delay: 0.3s; }
 
+    /* --- Initial Hidden State for Preloading --- */
+    .content-hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
 
     @media (max-width: 860px){
       .wrap{
@@ -688,16 +984,24 @@
 </head>
 <body>
   <div id="custom-cursor"></div>
+  
+  <!-- Noise Texture Overlay -->
+  <div class="noise-overlay"></div>
+
+  <!-- Theme Transition Overlay -->
+  <div id="theme-transition-overlay">
+      <div class="theme-loader"></div>
+  </div>
 
   <div id="preloader">
     <div class="text-container">
-        <div class="animated-text">
-            <span></span>
+        <div class="loader-text" data-text="DÊ VIDA ÀS SUAS IDEIAS">
+            <!-- Text injected via JS -->
         </div>
     </div>
   </div>
 
-  <main id="hero-section" style="display: none;">
+  <main id="hero-section" class="content-hidden">
       <div class="wrap">
         <div class="bg-logo" aria-hidden="true">
           <img src="/profilepicpng.png" alt="Background Logo" onerror="this.onerror=null;this.src='https://placehold.co/1600x1200/e0e0e0/333333?text=Image+Not+Found';" />
@@ -723,6 +1027,9 @@
           <section class="box" style="justify-content:center">
             <nav aria-label="Navegação principal">
               <div class="menu">
+                <a href="#" id="hero-theme-toggle" aria-label="Alternar tema">
+                    <i data-feather="moon"></i>
+                </a>
                 <a href="#servicos">serviços</a>
                 <a href="#sobre">sobre</a>
                 <a href="#contato">contato</a>
@@ -742,7 +1049,15 @@
       </div>
   </main>
 
-  <section id="servicos" style="display: none;">
+  <!-- Marquee Section -->
+  <div class="marquee-container">
+      <div class="marquee-content">
+          <!-- Content duplicated for JS logic -->
+          <span>AVAILABLE FOR FREELANCE • UI DESIGN • BRANDING • </span>
+      </div>
+  </div>
+
+  <section id="servicos" class="content-hidden">
     <div class="page-content">
         <h2 id="sec-servicos" class="section-title revealable">SERVIÇOS</h2>
 
@@ -782,14 +1097,14 @@
     </div>
   </section>
 
-  <section id="destaques" style="display: none;">
+  <section id="destaques" class="content-hidden">
     <header class="header revealable">
         <p>alguns destaques... clique para ver o projeto completo</p>
     </header>
 
     <main class="portfolio-grid">
 
-        <a href="#" class="grid-item-link">
+        <a href="#" class="grid-item-link" data-project="1">
             <div class="grid-item revealable">
                 <div class="grid-item-content">
                     <!-- IMAGE ADDED HERE -->
@@ -802,7 +1117,7 @@
             </div>
         </a>
 
-        <a href="#" class="grid-item-link">
+        <a href="#" class="grid-item-link" data-project="2">
             <div class="grid-item revealable">
                 <div class="grid-item-content">
                     <!-- IMAGE ADDED HERE -->
@@ -815,7 +1130,7 @@
             </div>
         </a>
 
-        <a href="#" class="grid-item-link">
+        <a href="#" class="grid-item-link" data-project="3">
             <div class="grid-item revealable">
                 <div class="grid-item-content">
                     <!-- IMAGE ADDED HERE -->
@@ -828,7 +1143,7 @@
             </div>
         </a>
 
-        <a href="#" class="grid-item-link">
+        <a href="#" class="grid-item-link" data-project="4">
             <div class="grid-item revealable">
                 <div class="grid-item-content">
                     <!-- IMAGE ADDED HERE -->
@@ -841,7 +1156,7 @@
             </div>
         </a>
 
-        <a href="#" class="grid-item-link">
+        <a href="#" class="grid-item-link" data-project="5">
             <div class="grid-item revealable">
                 <div class="grid-item-content">
                     <!-- IMAGE ADDED HERE -->
@@ -854,7 +1169,7 @@
             </div>
         </a>
 
-        <a href="#" class="grid-item-link">
+        <a href="#" class="grid-item-link" data-project="6">
             <div class="grid-item revealable">
                 <div class="grid-item-content">
                     <!-- IMAGE ADDED HERE -->
@@ -870,7 +1185,7 @@
     </main>
   </section>
 
-  <section id="sobre-contato" style="display: none;">
+  <section id="sobre-contato" class="content-hidden">
     <div class="container">
         <main class="content">
             <section id="sobre" class="about revealable">
@@ -886,8 +1201,8 @@
             <section id="contato" class="contact revealable">
                 <h2 class="section-title">CONTATO</h2>
                 <div class="social-icons">
-                    <a href="#" aria-label="Instagram"><i data-feather="instagram"></i></a>
-                    <a href="#" aria-label="Telefone"><i data-feather="phone"></i></a>
+                    <a href="https://instagram.com/user.vnts" target="_blank" aria-label="Instagram"><i data-feather="instagram"></i></a>
+                    <a href="https://wa.me/5522996191996" target="_blank" aria-label="Telefone"><i data-feather="phone"></i></a>
                 </div>
                 <a href="mailto:mvnts@pm.me" class="email">mvnts@pm.me</a>
             </section>
@@ -901,8 +1216,23 @@
             <i data-feather="arrow-up-circle"></i>
         </a>
     </div>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+        Mudar Tema
+    </button>
     <p class="credits">desenvolvido por <a href="#">vdesigner</a></p>
   </footer>
+
+  <!-- Case Study Modal -->
+  <div id="case-study-modal">
+      <div class="modal-header">
+          <button class="close-modal" aria-label="Fechar"><i data-feather="x"></i></button>
+      </div>
+      <button class="modal-nav-btn modal-prev" aria-label="Anterior"><i data-feather="chevron-left"></i></button>
+      <button class="modal-nav-btn modal-next" aria-label="Próximo"><i data-feather="chevron-right"></i></button>
+      <div class="modal-slider" id="modal-slider-content">
+          <!-- Images will be injected here via JS -->
+      </div>
+  </div>
 
   <script>
     feather.replace();
@@ -915,17 +1245,20 @@
         const sobreContatoSection = document.getElementById('sobre-contato');
         const grid = document.querySelector('#hero-section .grid');
         const scrollDownIcon = document.querySelector('.scroll-down');
-        const typewriter = document.querySelector('.animated-text span');
+        const loaderText = document.querySelector('.loader-text');
 
         function startTransition() {
             setTimeout(() => {
                 preloader.style.opacity = '0';
                 setTimeout(() => {
                     preloader.style.display = 'none';
-                    heroSection.style.display = 'flex';
-                    servicosSection.style.display = 'block';
-                    destaquesSection.style.display = 'block';
-                    sobreContatoSection.style.display = 'block';
+                    
+                    // Reveal content (it was already loaded in background)
+                    heroSection.classList.remove('content-hidden');
+                    servicosSection.classList.remove('content-hidden');
+                    destaquesSection.classList.remove('content-hidden');
+                    sobreContatoSection.classList.remove('content-hidden');
+                    
                     document.body.style.overflow = 'auto'; // Allow scrolling
                     
                     setTimeout(() => {
@@ -937,26 +1270,106 @@
             }, 500);
         }
 
-let transitionStarted = false;
+        // --- Decoding Text Effect (Underground Style) ---
+        const finalMessage = "DÊ VIDA ÀS SUAS IDEIAS";
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+        let iterations = 0;
+        
+        // Initial random text
+        loaderText.innerText = finalMessage.split('').map(() => chars[Math.floor(Math.random() * chars.length)]).join('');
 
-        function onAnimationEnd(event) {
-            if (event.animationName === 'reveal-text' && !transitionStarted) {
-                transitionStarted = true;
-                startTransition();
+        const interval = setInterval(() => {
+            loaderText.innerText = finalMessage
+                .split("")
+                .map((letter, index) => {
+                    if (index < iterations) {
+                        return finalMessage[index];
+                    }
+                    return chars[Math.floor(Math.random() * chars.length)];
+                })
+                .join("");
+
+            if (iterations >= finalMessage.length) {
+                clearInterval(interval);
+                // Add glitch class after decoding
+                loaderText.classList.add('glitch');
+                // Start site transition shortly after
+                setTimeout(startTransition, 800); 
             }
+
+            iterations += 1 / 2; // Speed of decoding
+        }, 50);
+
+
+        // --- Interactive Marquee Logic ---
+        const marqueeContent = document.querySelector('.marquee-content');
+        const baseText = marqueeContent.querySelector('span').innerText;
+        // Duplicate text enough times to fill screen + buffer
+        const repeatCount = 10; 
+        marqueeContent.innerHTML = baseText.repeat(repeatCount);
+
+        let marqueePos = 0;
+        let marqueeSpeed = 1.5; // Base speed
+        let marqueeDirection = -1; // -1 = left, 1 = right
+        let marqueeBoost = 0;
+
+        function animateMarquee() {
+            // Friction to slow down boost
+            marqueeBoost *= 0.92;
+            if (Math.abs(marqueeBoost) < 0.1) marqueeBoost = 0;
+
+            // Calculate total speed
+            // If boost is high enough, it dictates direction
+            if (marqueeBoost > 0.5) marqueeDirection = 1;
+            if (marqueeBoost < -0.5) marqueeDirection = -1;
+
+            const currentSpeed = (marqueeSpeed + Math.abs(marqueeBoost)) * marqueeDirection;
+            marqueePos += currentSpeed;
+
+            // Infinite Loop Logic
+            const contentWidth = marqueeContent.scrollWidth / 2; // Assuming we have enough duplicates
+            
+            // If moving left
+            if (marqueePos <= -contentWidth) {
+                marqueePos += contentWidth;
+            }
+            // If moving right
+            if (marqueePos > 0) {
+                marqueePos -= contentWidth;
+            }
+
+            marqueeContent.style.transform = `translateX(${marqueePos}px)`;
+            requestAnimationFrame(animateMarquee);
         }
 
-        typewriter.addEventListener('animationend', onAnimationEnd);
-        
-        // Fallback: força a transição após 5 segundos caso o evento não dispare
-        setTimeout(() => {
-            if (!transitionStarted) {
-                transitionStarted = true;
-                startTransition();
-            }
-        }, 5000);
+        animateMarquee();
 
-        typewriter.addEventListener('animationend', onAnimationEnd);
+        // Desktop Wheel Interaction
+        const marqueeContainer = document.querySelector('.marquee-container');
+        marqueeContainer.addEventListener('wheel', (e) => {
+            // e.deltaY usually vertical scroll, but we use it to boost horizontal speed
+            // 10x multiplier for "fast" feel
+            marqueeBoost += e.deltaY * -0.15; 
+        }, { passive: true });
+
+        // Mobile Touch Interaction
+        let touchStartX = 0;
+        let touchLastX = 0;
+
+        marqueeContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchLastX = touchStartX;
+        }, { passive: true });
+
+        marqueeContainer.addEventListener('touchmove', (e) => {
+            const touchCurrentX = e.touches[0].clientX;
+            const deltaX = touchCurrentX - touchLastX;
+            
+            // Boost based on drag speed
+            marqueeBoost += deltaX * 0.8;
+            
+            touchLastX = touchCurrentX;
+        }, { passive: true });
 
         // --- Scroll Reveal Logic ---
         const observerOptions = {
@@ -1235,124 +1648,130 @@ let transitionStarted = false;
             });
         });
 
-    });
-  </script>
+        // --- Dark Mode Toggle ---
+        const themeToggles = document.querySelectorAll('#theme-toggle, #hero-theme-toggle');
+        const brandLogo = document.querySelector('.brand-logo');
+        const bgLogo = document.querySelector('.bg-logo img');
+        const themeTransitionOverlay = document.getElementById('theme-transition-overlay');
 
-</body>
-</html>
-            const scrollY = window.scrollY;
-            const parallaxSpeed = 0.5; // Adjust for desired effect
-            const translateY = scrollY * parallaxSpeed;
-            bgLogoImg.style.transform = `translate(2%, calc(-4% + ${translateY}px))`;
-            lastScrollY = scrollY;
-            requestAnimationFrame(updateParallax);
-        }
-
-        updateParallax();
-
-        // --- Floating Logo Trigger ---
-        setTimeout(() => {
-            const brandLogo = document.querySelector('.brand-logo');
-            if(brandLogo) brandLogo.classList.add('floating');
-        }, 2500);
-
-        // --- Scroll Down Fade Out ---
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                scrollDownIcon.style.opacity = '0';
-                scrollDownIcon.style.pointerEvents = 'none';
-            } else {
-                // Only show if the intro animation has finished
-                if (grid.classList.contains('visible')) {
-                    scrollDownIcon.style.opacity = '1';
-                    scrollDownIcon.style.pointerEvents = 'auto';
-                }
-            }
-        });
-
-        // --- Draggable Logo Logic ---
-        const logoWrapper = document.getElementById('draggable-logo');
-        let isDragging = false;
-        let startX, startY, initialLeft, initialTop;
-        let isFixed = false;
-
-        function startDrag(e) {
-            // Allow multi-touch gestures or other interactions if needed, but here we consume the event
-            if (e.type === 'touchstart') e.preventDefault();
-
-            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-
-            // "Pop" the logo out of the layout on first interaction
-            if (!isFixed) {
-                const rect = logoWrapper.getBoundingClientRect();
-                
-                // Create a placeholder to prevent layout shift
-                const placeholder = document.createElement('div');
-                placeholder.style.width = rect.width + 'px';
-                placeholder.style.height = rect.height + 'px';
-                placeholder.style.display = 'inline-block'; // Match wrapper display
-                logoWrapper.parentNode.insertBefore(placeholder, logoWrapper);
-
-                // Set fixed position to allow free movement
-                logoWrapper.style.position = 'fixed';
-                logoWrapper.style.left = rect.left + 'px';
-                logoWrapper.style.top = rect.top + 'px';
-                logoWrapper.style.width = rect.width + 'px';
-                logoWrapper.style.zIndex = '10001';
-                logoWrapper.style.margin = '0';
-                
-                isFixed = true;
-            }
-
-            logoWrapper.classList.add('active');
-            isDragging = true;
-            startX = clientX;
-            startY = clientY;
+        function toggleTheme(e) {
+            if(e) e.preventDefault();
             
-            const style = window.getComputedStyle(logoWrapper);
-            initialLeft = parseFloat(style.left);
-            initialTop = parseFloat(style.top);
+            // 1. Show Overlay
+            themeTransitionOverlay.classList.add('active');
 
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('touchmove', drag, {passive: false});
-            document.addEventListener('mouseup', stopDrag);
-            document.addEventListener('touchend', stopDrag);
+            // 2. Wait for fade in
+            setTimeout(() => {
+                // 3. Wait 1s loading
+                setTimeout(() => {
+                    // 4. Actual Toggle
+                    document.body.classList.toggle('dark-mode');
+                    const isDark = document.body.classList.contains('dark-mode');
+
+                    // Swap Logos
+                    const newSrc = isDark ? 'profilepicpngwhite.png' : 'profilepicpng.png';
+                    if(brandLogo) brandLogo.src = newSrc;
+                    if(bgLogo) bgLogo.src = newSrc;
+
+                    // 5. Hide Overlay
+                    themeTransitionOverlay.classList.remove('active');
+
+                }, 1000);
+            }, 500);
         }
 
-        function drag(e) {
-            if (!isDragging) return;
-            e.preventDefault(); // Prevent scrolling
-            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-            const dx = clientX - startX;
-            const dy = clientY - startY;
-            logoWrapper.style.left = (initialLeft + dx) + 'px';
-            logoWrapper.style.top = (initialTop + dy) + 'px';
-        }
-
-        function stopDrag() {
-            isDragging = false;
-            document.removeEventListener('mousemove', drag);
-            document.removeEventListener('touchmove', drag);
-            document.removeEventListener('mouseup', stopDrag);
-            document.removeEventListener('touchend', stopDrag);
-        }
-
-        logoWrapper.addEventListener('mousedown', startDrag);
-        logoWrapper.addEventListener('touchstart', startDrag, {passive: false});
-
-        // Remove active state when clicking outside
-        document.addEventListener('mousedown', (e) => {
-            if (isFixed && !logoWrapper.contains(e.target)) {
-                logoWrapper.classList.remove('active');
-            }
+        themeToggles.forEach(btn => {
+            btn.addEventListener('click', toggleTheme);
         });
-        document.addEventListener('touchstart', (e) => {
-            if (isFixed && !logoWrapper.contains(e.target)) {
-                logoWrapper.classList.remove('active');
-            }
+
+        // --- Case Study Modal Logic ---
+        const modal = document.getElementById('case-study-modal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const sliderContent = document.getElementById('modal-slider-content');
+        const projectLinks = document.querySelectorAll('.grid-item-link');
+        const prevBtn = document.querySelector('.modal-prev');
+        const nextBtn = document.querySelector('.modal-next');
+        let slideObserver = null;
+
+        projectLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal();
+            });
         });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        
+        // Navigation Logic
+        prevBtn.addEventListener('click', () => {
+            sliderContent.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
+        });
+        nextBtn.addEventListener('click', () => {
+            sliderContent.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
+        });
+        
+        // Hover effect for nav buttons using custom cursor
+        [prevBtn, nextBtn, closeModalBtn].forEach(btn => {
+            btn.addEventListener('mouseenter', () => document.getElementById('custom-cursor').classList.add('hover'));
+            btn.addEventListener('mouseleave', () => document.getElementById('custom-cursor').classList.remove('hover'));
+        });
+
+        function openModal() {
+            // Populate with 9 placeholder images representing the process
+            sliderContent.innerHTML = '';
+            for (let i = 1; i <= 9; i++) {
+                const slide = document.createElement('div');
+                slide.classList.add('slide');
+                
+                const img = document.createElement('img');
+                // Using placeholders. In real usage, you'd use an array of real URLs based on the project ID
+                let text = i.toString(); // Apenas números
+                
+                img.src = `https://placehold.co/1920x1080/222/fff?text=${encodeURIComponent(text)}`;
+                img.alt = text;
+                
+                slide.appendChild(img);
+
+                // Caption (Underground Style)
+                const caption = document.createElement('div');
+                caption.classList.add('slide-caption');
+                caption.innerHTML = `<h3>PROJETO ${i}</h3><br><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Estilo underground.</p>`;
+                slide.appendChild(caption);
+
+                sliderContent.appendChild(slide);
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            
+            // Setup Observer for Slide Animations
+            if (slideObserver) slideObserver.disconnect();
+            
+            const options = {
+                root: sliderContent,
+                threshold: 0.5
+            };
+            
+            slideObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    } else {
+                        entry.target.classList.remove('active');
+                    }
+                });
+            }, options);
+            
+            document.querySelectorAll('.slide').forEach(slide => {
+                slideObserver.observe(slide);
+            });
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            if (slideObserver) slideObserver.disconnect();
+        }
 
     });
   </script>
