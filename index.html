@@ -16,6 +16,7 @@
   <meta property="og:type" content="https://vdesigner.vercel.app">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <!-- Added font weight 500 for Inter Medium -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/feather-icons"></script>
@@ -34,6 +35,17 @@
       --muted: #a3a3a3;
       --accent: #ffffff;
       color-scheme: dark;
+    }
+    /* Fix for browsers forcing dark mode */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            color-scheme: light;
+        }
+    }
+    @media (forced-colors: active) {
+        :root {
+            color-scheme: light;
+        }
     }
     *{box-sizing:border-box; scroll-behavior: smooth;}
     html,body{height:100%}
