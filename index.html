@@ -54,6 +54,8 @@
         scrollbar-width: none;
         /* Hide scrollbar for IE, Edge */
         -ms-overflow-style: none;
+        width: 100%;
+        overflow-x: hidden;
     }
     /* Hide scrollbar for Chrome, Safari and Opera */
     html::-webkit-scrollbar {
@@ -65,6 +67,8 @@
       color: var(--fg);
       /* Changed to allow scrolling once preloader is gone */
       overflow:hidden;
+      overflow-x: hidden;
+      width: 100%;
       cursor: none; /* Hide the default cursor */
     }
 
@@ -1289,6 +1293,8 @@
                     sobreContatoSection.classList.remove('content-hidden');
                     
                     document.body.style.overflow = 'auto'; // Allow scrolling
+                    document.body.style.overflowY = 'auto'; // Allow vertical scrolling
+                    document.body.style.overflowX = 'hidden'; // Prevent horizontal scrolling
                     
                     setTimeout(() => {
                         grid.classList.add('visible');
